@@ -64,7 +64,7 @@ FLOAT_LAT = 0
 FLOAT_LONG = 0
 NEXT_LAT = 0
 NEXT_LONG = 0
-NEXT_COOR = None
+NEXT_COOR = ''
 auto_refresh = 0
 default_step = 0.001
 api_endpoint = None
@@ -476,7 +476,7 @@ def get_args():
         '-H',
         '--host',
         help='Set web server listening host',
-        default='127.0.0.1')
+        default='0.0.0.0') #127.0.0.1'
     parser.add_argument(
         '-P',
         '--port',
@@ -630,13 +630,18 @@ def main():
     #     set_location(str(NEXT_LAT) + ', ' + str(NEXT_LONG))
     #     NEXT_LAT = 0
     #     NEXT_LONG = 0
-    global NEXT_COOR
-    if (NEXT_COOR and
-            (NEXT_COOR != NEXT_COOR)):
-        print('!!!!Update to next location %f, %f' % (NEXT_COOR))
+    global NEXT_COOR, NEXT_LAT, NEXT_LONG
+    if NEXT_COOR:
+        NEXT_LAT, NEXT_LONG = [float(x) for x in NEXT_COOR.split(",")]
+        print('!!!!Update to next location %f, %f' % (NEXT_LAT, NEXT_LONG))
+    if (NEXT_LAT and NEXT_LONG and
+            (NEXT_LAT != FLOAT_LAT or NEXT_LONG != FLOAT_LONG)):
+        print('!!!!Update to next location %s' % (NEXT_COOR))
         #set_location_coords(NEXT_LAT, NEXT_LONG, 0)
         set_location(NEXT_COOR)
-        NEXT_COOR = None
+        NEXT_COOR = ''
+        NEXT_LAT = 0
+        NEXT_LONG = 0
     else:
         set_location_coords(origin_lat, origin_lon, 0)
 
